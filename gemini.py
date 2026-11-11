@@ -8,7 +8,7 @@ env_path = Path(__file__).parent / ".env"
 print("Script folder:", Path(__file__).parent)
 print(".env exists:", env_path.exists())
 
-load_dotenv(env_path, override=True)   # this line was missing
+load_dotenv(env_path, override=True)   
 
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
