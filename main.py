@@ -4,17 +4,17 @@ import pyttsx3
 import musicLibrary
 import requests
 import os
-
-recognizer = sr.Recognizer()
-# old code
-# engine = pyttsx3.init()
+from pathlib import Path
+from dotenv import load_dotenv
+from google import genai
 
 newsapi = os.getenv('NEWS_API_KEY')
+env_path = Path(__file__).parent / ".env"
+load_dotenv(env_path, override=True)   
+recognizer = sr.Recognizer()
+geminiapi = os.getenv('GEMINI_API_KEY')
 
 def speak(text):
-    # old code
-    # engine.say(text)
-    # engine.runAndWait()
     engine = pyttsx3.init()
     engine.say(text)
     engine.runAndWait()
@@ -36,6 +36,16 @@ def processCommand(c):
             articles = data.get('articles',[])
             for article in articles:
                 speak(article['title'])
+    else:
+        prompt = c.lower()
+        print('processing with AI')
+        client = genai.Client(api_key=geminiapi)
+        interaction = client.interactions.create(
+        model="gemini-3.8-flash",
+        input=prompt,
+        )
+        print(interaction.output_text)
+        speak(interaction.output_text)
 
 
 
