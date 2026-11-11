@@ -3,12 +3,13 @@ import webbrowser
 import pyttsx3
 import musicLibrary
 import requests
+import os
 
 recognizer = sr.Recognizer()
 # old code
 # engine = pyttsx3.init()
 
-newsapi = '2b08e2763e5f47ab9c62a234e2576be2'
+newsapi = os.getenv('NEWS_API_KEY')
 
 def speak(text):
     # old code
