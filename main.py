@@ -2,9 +2,13 @@ import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import musicLibrary
+import requests
+
 recognizer = sr.Recognizer()
 # old code
 # engine = pyttsx3.init()
+
+newsapi = '2b08e2763e5f47ab9c62a234e2576be2'
 
 def speak(text):
     # old code
@@ -24,6 +28,14 @@ def processCommand(c):
         print(song)
         link = musicLibrary.music[song]
         webbrowser.open(link)
+    elif 'news' in c.lower():
+        r = requests.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=2b08e2763e5f47ab9c62a234e2576be2')
+        if r.status_code == 200:
+            data = r.json()
+            articles = data.get('articles',[])
+            for article in articles:
+                speak(article['title'])
+
 
 
 if __name__ =='__main__':
@@ -43,6 +55,7 @@ if __name__ =='__main__':
                 with sr.Microphone() as source:
                     audio = r.listen(source)
                     command = r.recognize_google(audio)
+                    print('processing',command)
                     processCommand(command)
 
         except Exception as e:
