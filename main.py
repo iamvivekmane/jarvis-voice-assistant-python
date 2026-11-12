@@ -3,22 +3,38 @@ import webbrowser
 import pyttsx3
 import musicLibrary
 import requests
+import pygame
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
+from gtts import gTTS
 
 newsapi = os.getenv('NEWS_API_KEY')
 env_path = Path(__file__).parent / ".env"
 load_dotenv(env_path, override=True)   
 recognizer = sr.Recognizer()
 geminiapi = os.getenv('GEMINI_API_KEY')
+client = genai.Client(api_key=geminiapi)
+SYSTEM = "You are Jarvis, a voice assistant. Reply in one or two short spoken sentences. No markdown, lists, or emojis."
 
-def speak(text):
+def speak_old(text):
     engine = pyttsx3.init()
     engine.say(text)
     engine.runAndWait()
     engine.stop()
+
+def speak(text):
+    tts = gTTS(text)
+    tts.save('temp.mp3')
+    pygame.mixer.init()
+    pygame.mixer.music.load('temp.mp3')
+    pygame.mixer.music.play()
+    clock = pygame.time.Clock()
+    while pygame.mixer.music.get_busy():
+        clock.tick(10)
+    pygame.mixer.music.unload()
 
 def processCommand(c):
     if 'open google' in c.lower():
@@ -37,17 +53,19 @@ def processCommand(c):
             for article in articles:
                 speak(article['title'])
     else:
-        prompt = c.lower()
-        print('processing with AI')
-        client = genai.Client(api_key=geminiapi)
+        ask_ai(c)
+
+def ask_ai(prompt):
+    try:
         interaction = client.interactions.create(
-        model="gemini-3.8-flash",
-        input=prompt,
-        )
+        model="gemini-3.5-flash",
+        input=prompt,)
         print(interaction.output_text)
         speak(interaction.output_text)
 
-
+    except Exception as e:
+        print("Gemini error:", e)
+        return "Sorry, I couldn't get an answer."
 
 if __name__ =='__main__':
     speak('Initializing jaarvis...')

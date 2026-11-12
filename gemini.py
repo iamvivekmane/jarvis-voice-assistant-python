@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
 from google import genai
 
@@ -17,7 +16,7 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
-    input="Explain how AI works in a few words",
+    model="gemini-3.5-flash",
+    input="what is coding tell me short",
 )
 print(interaction.output_text)
