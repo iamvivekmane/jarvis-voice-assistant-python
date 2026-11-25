@@ -3,13 +3,13 @@ import webbrowser
 import pyttsx3
 import musicLibrary
 import requests
-import pygame
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
-from google.genai import types
 from gtts import gTTS
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+import pygame
 
 newsapi = os.getenv('NEWS_API_KEY')
 env_path = Path(__file__).parent / ".env"
@@ -68,7 +68,7 @@ def ask_ai(prompt):
         return "Sorry, I couldn't get an answer."
 
 if __name__ =='__main__':
-    speak('Initializing jaarvis...')
+    speak('Initializing jarvees...')
     r = sr.Recognizer()
     while True:
         # recognize speech using Sphinx
